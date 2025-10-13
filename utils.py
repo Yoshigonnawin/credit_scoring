@@ -39,6 +39,7 @@ def fill_missing_values(
 
     return data
 
+
 def categorize_columns(data: pd.DataFrame) -> dict[str, list[str]]:
     """
     Разделяет колонки DataFrame на числовые, булевые и категориальные.
