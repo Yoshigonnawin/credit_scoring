@@ -82,3 +82,33 @@ class Preprocessor:
         )
 
         return step_2.drop(columns=["def_45", "application_datetime"])
+
+    def get_column_dtypes(self) -> dict[str, str]:
+        """
+        Возвращает маппинг колонка -> тип данных из ColumnTransformer.
+
+        Returns:
+            Словарь {col_name: dtype}
+        """
+        column_dtypes = {}
+
+        for name, transformer, columns in self.column_transformer.transformers_:
+            if name == "remainder":
+                continue
+
+            col_list = (
+                list(columns) if isinstance(columns, (list, tuple)) else [columns]
+            )
+
+            # Определяем dtype по типу трансформера
+            if isinstance(transformer, OrdinalEncoder):
+                dtype = "categorical"
+            elif isinstance(transformer, StandardScaler):
+                dtype = "numeric"
+            else:
+                dtype = type(transformer).__name__
+
+            for col in col_list:
+                column_dtypes[col] = dtype
+
+        return column_dtypes
