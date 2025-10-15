@@ -1,7 +1,5 @@
 import logging
-import pandas as pd
 from pathlib import Path
-from typing import List, Dict, Optional
 import joblib
 from sklearn.compose import ColumnTransformer
 from catboost import CatBoostRegressor
