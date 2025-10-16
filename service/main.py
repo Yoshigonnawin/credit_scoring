@@ -19,13 +19,14 @@ logger = logging.getLogger("uvicorn.error")
 
 
 COLUMN_TRANSFORMER_PATH = os.getenv(
-    "COLUMN_TRANSFORMER_PATH", Path("service/model/column_transformer.pkl")
+    "COLUMN_TRANSFORMER_PATH", Path("model/column_transformer.pkl")
 )
-MODEL_PATH = os.getenv("MODEL_PATH", Path("service/model/model.pkl"))
+MODEL_PATH = os.getenv("MODEL_PATH", Path("model/model.pkl"))
 TEST_DATA_PATH = os.getenv(
-    "TEST_DATA_PATH", Path("service/test_data/test_data.parquet")
+    "TEST_DATA_PATH", Path("test_data/test_data.parquet")
 )
 CUTOFF = os.getenv("CUTOFF", 363)
+CUTOFF = int(CUTOFF)
 
 
 @asynccontextmanager
