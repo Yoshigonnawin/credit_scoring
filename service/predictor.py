@@ -10,9 +10,8 @@ logger = logging.getLogger("uvicorn.error")
 
 
 class Predictor:
-    def __init__(self, cutoff: int, test_data: pd.DataFrame) -> None:
+    def __init__(self, cutoff: int) -> None:
         self.cutoff = cutoff
-        self.test_data = test_data
 
     def _predict_by_model(
         self, model: CatBoostRegressor, data: pd.DataFrame
@@ -20,7 +19,7 @@ class Predictor:
         return model.predict_proba(data)
 
     def _proba_2_score(self, proba: np.ndarray) -> np.ndarray:
-        scores = (proba[:, 1] * 1000).astype(np.int16)
+        scores = (proba[:, 0] * 1000).astype(np.int16)
         return scores
 
     def _get_resolution_by_cutoff(
@@ -48,7 +47,22 @@ class Predictor:
         return result
 
     def get_test_predictions(
-        self, model: CatBoostRegressor, preprocessor: Preprocessor
-    ) -> list[dict[str, int | str]]:
-        sel = self.test_data.iloc[choice(range(self.test_data.shape[0]))]
-        return self.get_predictions(model, preprocessor, sel)
+        self, model: CatBoostRegressor, preprocessor: Preprocessor, data: pd.DataFrame
+    ) -> dict[str, any]:
+        """
+        Возвращает предсказания вместе с изначальными данными и их типами
+        """
+        idx = choice(range(data.shape[0]))
+        sel = data.iloc[[idx]]
+        predictions = self.get_predictions(model, preprocessor, sel)
+
+        data_types = {}
+
+        for column in sel.columns:
+            value = sel[column].iloc[0]
+            data_types[column] = str(type(value).__name__)
+
+        return {
+            "predictions": predictions,
+            "data_types": data_types,
+        }
