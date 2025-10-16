@@ -1,0 +1,14 @@
+services:
+  recommendation-service:
+    build: .
+    ports:
+      - "${MAIN_APP_PORT:-8000}:${MAIN_APP_PORT:-8000}"
+    environment:
+      - MAIN_APP_PORT=${MAIN_APP_PORT:-8000}
+      - MODEL_PATH=/app/model/model.pkl
+      - COLUMN_TRANSFORMER_PATH=/app/model/column_transformer.pkl
+      - CUTOFF=363
+      - TEST_DATA_PATH=/app/test_data/test_data.parquet
+    volumes:
+      - ./model:/app/model:ro
+      - ./test_data:/app/test_data:ro
